@@ -1,0 +1,488 @@
+﻿---
+title: "jfmisc"
+author: "Josef Frank"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        toc: true
+        number_sections: true
+    
+vignette: >
+  %\VignetteIndexEntry{jfmisc}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Preparing the workspace
+
+As R is by default converting strings to factors when loading text data, and this has some subtle implications that we most often do not want to deal with, we first include the following line:
+
+```r
+options(stringsAsFactors=FALSE)
+```
+
+To make ourselves life easier we will change our R profile ("~/.Rprofile" in Linux or "%USERPROFILE%\Documents\.Rprofile" in Windows) to attach some useful packages that we will almost surely use for any newly started R session automatically. So we want our updated R profile to include the following lines right at the beginning:
+
+```r
+library(data.table)
+library(magrittr)
+```
+
+Next, if we are often dealing with the creation of e data.frames or data.tables we might be inclined to define some abbreviations we'll often use and save quite typing work over time. As we do not want to clutter our namespace we collect them all into a list, which we also will attach:
+
+```r
+attach(list(
+    DF <- function(...) data.frame(...),
+    DT <- function(...) data.table(...)
+),name='myfun')
+```
+
+Please note the capital letters, as 'dt' and 'df' are already defined functions, which we do not want to hide.
+
+# Simplified output
+
+Numerous times simple text output is sufficient. However, defaults defined for the write.table procedure often do not match one's desires, e.g. output of row.names leads to files that have a different number of columns in the 1^st lines, or quoting of text fields creates problems for some programs that are to be used later on the data. So there are two functions to facilityte data exchange: write.tab and write.space
+
+So e.g. to get the famous "iris" data set into the clipboard, with columns separated by tabs, for pasting it into e.g. your favourite text editor or spreadsheet, you could just write (using our R profile above):
+
+```{r, eval=FALSE}
+iris %>% write.tab("clipboard")
+```
+
+# Transformations
+
+## Preparing fractional data for parametric analysis
+
+Often data that we deal with show particular distributions other than normal, e.g. methylation-% data (so-called beta values) strictly speaking have a range between 0 and 1, as they denote a fraction, while common statistical methods assume a normal distribution. Nonetheless sometimes a simple transformation enables us to use parametric methods on these data as well.
+
+In the following example we first create our fractional data, six vectors with 30 observations and mean values around 0.01,0.05,0.5,0.8 and 0.9:
+
+```r
+a <- sapply(c(0.01, 0.05, 0.5, 0.8, 0.9),function(x) rbinom(30, 100, x) / 100)
+```
+
+We can see that at both ends of the range the distributions are somewhat distorted and asymmetric:
+ 
+```r
+matplot(a, pch=20)
+```
+
+This leads to bias when using parametric methods. One possibility to change the shape of the distribution to more normal is a logit transformation to so called M-Values (log of odds). Plotting these transformed values, we see that throughout the whole range they look symmetric, in particular at the ends of the range:
+
+```r
+b <- beta2m(a)
+matplot(b,pch=20)
+```
+
+Generally the transformation (which is nothing alse than the link function of the logistic regression, the only difference being that we here use logarithm with base 2 instead of e) will stretch the distribution at the extremes:
+
+```r
+matplot(a, b, pch=20)
+```
+
+## Transforming back
+
+However when showing e.g. the average values for publication, often the reader finds the original scale of values more intuitive, so for plotting we transform them back to the original (0,1) scale by using the inverse function:
+
+```
+M_means <- colmeans(b)
+beta_means <- beta2m(M_means)
+barplot(beta_means)
+```
+
+## Details and points to consider
+
+To be precise, in this transformation the previous range (0,1) will be converted to the whole range of (-Inf,Inf). Here some special values:
+
+  Original.Value  |  Transformed.Value  
+ ---------------- | -------------------
+               0  |               -Inf  
+             0.2  |                 -2  
+             1/3  |                 -1  
+             0.5  |                  0  
+             2/3  |                  1  
+             0.8  |                  2  
+               1  |                Inf  
+
+
+This has some implications:
+
+- Values x=0 and x=1 result in transformed values to have an absolute value of Inf.
+- As the function is not defined outside this range, values of x<0 or x>1 will result in NA values
+
+In order to use this kind of transformation
+
+1. we have to make sure that we have fractional data.
+
+2. If our range is different from (0,1) we have to fit the data into this range. This is possible by using the function normalize (see below).
+
+3. If we want to include the borders themselves (x=0 or x=1) we have to treat them specially (use fixlimits; see below)
+
+## Pretreating different scales
+
+These have to be fit into the range(0,1). If we know in advance the exact range, we can convert the original data in a way, that the theoretical minimum becomes 0 and the theoretical maximum gets 1. If we do not know the theoretical range, we just base the calculations on the min and max values of our sample itself. Let's simply assume we have fractional data that have been scaled to the range of (0,7):
+
+```r
+a <- runif(1000)*7
+```
+
+Then we just call normalize to get them to the proper interval:
+
+```r
+a1 <- normalize(a)
+plot(a, a1)
+```
+
+## Make use of limits (0 and 1)
+
+Common procedures are not really able to cope with values of infinity. To still use the values at the extremes, i.e. not discarding them by trimming the distribution, we can instead shift them to somewhere in between:
+
+```
+a <- 0:10 / 10
+b <- fixlimits(a)
+cbind(a, b)
+```
+
+So we see that values 0 and 1 get shifted to the position exactly half way between the borders and the previously most extreme value in their vicinity.
+
+
+# Dealing with messy data
+
+When merging data sets from multiple sources one often has to deal with missing data, multiple data entry or inconsistent mappings of identifiers.
+
+## Multiple columns with the same data
+
+In the easiest case, there are no entry errors, we just get the information multiple times (with missings at different positions), and take the first column with a non-missing value (shamelessly copied from the sql coalesce function:
+
+```r
+    a1 <- c(1, NA, NA, NA)
+    a2 <- c(2, 2, NA, NA)
+    a3 <- c(NA, 3, 3, NA)
+    cbind(a1, a2, a3, suppl=coalesce(a1, a2, a3))
+```
+
+## Mapping errors or inconstent data entry
+
+Let us now assume that within a study your have collected data and one attribute is input by not one but several data collectors, with partly overlapping ids. After merging some observations are contained in the data set multiple times with partly diverging values and after sorting the data you have the following situation:
+
+```r
+messy_data <- data.table(id1=c(1,2,3,3,4,4,5),
+        id2=c("a","b","c","c","d","dd","d"),
+        smoker=c(0,0,1,1,0,1,0))
+```
+
+Somehow in both directions the id mapping has been messed up, and depending on the id code we use at least for some obersvations the smoking status information is inconsistent. So let's just find out, what are the critical observations:
+
+```r
+messy_data[incons(id1,id2)]
+```
+
+If we do not have the information to resolve the conflict we would have to discard these data sets as we do not trust messud up ids:
+
+```r
+clean_data <- messydata[!incons(id1,id2)]
+```
+
+## Partly overlapping, partly missing data
+
+Sometimes the situation is even worse. In the next study we tried to avoid overloading the assistants with work and split the sample into 3 parts. Somehow the work was still too much, or maybe the instruments weren't working properly, so we got back partly mising data sets from all our collaborators:
+
+```r
+    pheno1 <- data.frame(id1=c(1,2,3,4),id2=c(11,22,NA,NA),phenodat=c(NA, NA, NA, "d"))
+    pheno2 <- data.frame(id1=c(NA, NA, NA),id2=c(11, 22, 33),phenodat=c("a", "b", "c"))
+    pheno3 <- data.frame(id1=c(4, 3), id2=c(44, 33), phenodat=c(NA,NA))
+    phenoges <- rbindlist(list(pheno1, pheno2, pheno3))
+    phenoges
+```
+
+So we try to supplement the data/id were possible by use of fillmap focussing on the 1^st id:
+
+```r
+phenoges[, fillmap(id1, phenodat)]
+```
+
+We see, some entries are duplicates, so let's get rid of them:
+
+```r
+phenoges[, fillmap(id1, phenodat, rmdup=TRUE)]
+```
+
+And now let us focus on the part of the data set were we are able to supplement the data:
+
+```r
+phenoges[,fillmap(id1,phenodat,rmmiss=TRUE)]
+```
+
+Of course we don't want to have the duplicates again:
+
+```r
+phenoges[,fillmap(id1,phenodat,rmmiss=TRUE,rmdup=TRUE)]
+```
+
+Hmmhh. that not satisfying at all, rather terrible. Let's try the alternative id:
+
+```r
+phenoges[,fillmap(id2,phenodat,rmmiss=TRUE,rmdup=TRUE)]
+```
+
+That is some improvement, but not pretty either. Now we have only covered a different part of the sample. We see that using either of the IDs alone, we cannot get rid of all the missings. But how about the following approach:
+
+1. We try to get a complete id mapping, keeping all observations
+2. Afterwards we try to fill in the phenotype data
+3. finally we filter missings and duplicates
+
+```r
+phenosupp <- phenoges[,fillmap(id1,id2)]
+setnames(phenosupp,"id1","id2")
+phenosupp[,phenodat:=fillmap(id1,phenoges$phenodat,what="y")]
+unique(phenosupp)
+```
+
+Bingo! In this case we were lucky and could fill in all missing data.
+
+
+
+
+# Multivariate data
+
+
+## Reduce dimensions for batch and anomaly detection
+
+Detection of large scale group differences in high dimensional data (like micro array or spectrometry studies) is facilitated by reducing the data set to a more manageable number of attributes, e.g. by means of PCA or MDS.
+
+In this kind of studies technical artefacts (like batch effects) are often the main drivers for variation, showing an even  bigger effect than the experimental factor. In these cases the issue can be mitigated by just using the extracted PCs as covariates.
+
+If we assume, that all the variables of concern are measured on the same scale and that this variation can captured by just using the features with the biggest variance, we can save quite some processing time by only using a small fraction of the variables, namely the ones showing the highest variance.
+
+The pcv() function conducts a principal component analysis. Only a limited number (default up to 5000) of variables with the highest variance in the data set are selected. A very limited number of PCs (default n=5) is then extracted that can be used for visualization etc.
+
+Let's create an example data set in attribute major (attributes given by rows, observations by columns) format:
+
+```r
+nobs <- 80
+nvar <- 10000
+data1 <- matrix(rnorm(nobs*nvar), nrow=nvar)
+
+# introduce some differences in variance across features
+data1 <- data1 * outer((1:nvar)^2/nvar^2*2,rep(1,nobs))
+
+# add the batch effect
+batch <- rep(1:4,each=nobs*.25)
+data2 <- data1 + outer(rep(1,nvar),batch)
+```
+
+Batch effects are not that easy to discern, at least not when variance is big compared to the effects (right side of the plot):
+
+```r
+matplot(data2,type="p",pch=".",col=factor(batch))
+```
+
+But pcv can help here. Even when using only the 5% features showing the biggest variance the groups are clearly separable
+
+```r
+pcv_full <- pcv(data2,1)
+pcv_500 <- pcv(data2,1,nvar*0.05)
+plot(pcv_full,col=batch,pch=20)
+plot(pcv_500,col=batch,pch=20)
+
+```
+
+
+## Remove known batch effects
+
+In most cases not all samples can be processed simultaneously, so the total set is split into smaller batches, which are then processed one at a time. In particular for high dimensional data the so called batch effects introduced during processing can severely hamper analysis, lead to spurious associations, reduce power or even change correlation structure of the variables assessed.
+
+1^st and most important step in reducing impact of batch effects is proper randomization, as far as possible.
+
+2^nd step is to take the variation introduced by batch effect into account during analysis, e.g. by incorporating them as covariates in regression modelling. Some methods however do not support this type of adjustment per se, but require a priori batch removal. In that case rmbat & co can be helpful.
+
+For example:
+Lets first create some data set with a certain true effect of the experimental variable:
+
+```r
+    n_obs <- 8
+    n_var <- 10
+    predictor <- rep(0:1,n_obs*0.5)
+    pure_effect <- outer(rnorm(n_var),predictor)
+```
+
+Luckily we have access to two machines, so that we can work in parallel. Still it's time consuming and measurement takes two runs on each of the machines, so we have two different batch effects (machine and run):
+
+```r
+    batch1 <- rep(1:2,each=n_obs*0.5)
+    batch2 <- rep(c(1,2,1,2),each=n_obs*0.25)
+```
+
+Now not every one of the measured features is affected the same way, some more, some less (kind of randomly distributed batch effect size for each of the features). Just more frequently than not the batch effect size is far bigger than the true effect size of interest. 
+
+```r
+    batch_effect1 <- outer(rnorm(n_var)*4,scale(batch1))[,,1]
+    batch_effect2 <- outer(rnorm(n_var)*2,scale(batch2))[,,1]
+    batch_effect <- batch_effect1 + batch_effect2
+```
+
+In addition, we have some noise in the data, so finally our measured data are a mix of real effect of our experimental condition, all batch effects, and the measurement error:
+
+```r
+    error <- matrix(rnorm(n_var*n_obs),n_var,n_obs)
+    data_measured <- pure_effect + batch_effect + error
+```
+
+When analyzing the data, we have lot's of noise. It could well be, that batches, and not experimental conditions ar the biggest source of variability:
+
+```r
+pcscores <- pcv(data_measured,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+```
+
+To get rid of these batch effects, we could just subtract them from the measured data:
+
+```r
+data_wo_batch <- data_measured - batch_effect
+```
+
+However, in most cases, we do not know the true batch effect, so to remove them, we choose the following simplified approach:
+
+1. We treat all of the variables separately and assume, the batch effects in one variable are not correlated with the values in the remaining variables
+2. We assume that all of the batches build a kind of batch population with a normal distribution around the mean value of the total sample for each of the variables (like it is explicitly coded in the example above). Therefore, we just center all of the batches round the grand mean. Thus we should get the same condition as if we had removed the true batch effects. 
+
+As in this example in addition the batches are perfectly balanced it should not matter, whether we conduct the processing in one step (building a new batch variable by combining both available batch identifiers), or we alternatively remove one at a time.
+
+Let us 1^st try that in the actual batch effects data separately, and see whether we can zero out the batch effects
+
+```r
+    zero <- outer(rep(0,n_var),rep(0,n_obs))
+    b1 <- rmbat(batch_effect1,batch1)
+    b2 <- rmbat(batch_effect2,batch2)
+    b12a <- rmbat(batch_effect1,paste(batch1,batch2))
+    b12b <- batch_effect %>% rmbat(batch1) %>% rmbat(batch2)
+    all.equal(b1,zero)
+    all.equal(b2,zero)
+    all.equal(b12a,zero)
+    all.equal(b12b,zero)
+```
+
+Now for the same in the actual data. Let us assume, we had no measurement error:
+ 
+```r
+    (pure_effect + batch_effect1) %>% rmbat(batch1) %>% all.equal(pure_effect)
+    (pure_effect + batch_effect2) %>% rmbat(batch2) %>% all.equal(pure_effect)
+    (pure_effect + batch_effect1 + batch_effect2) %>% rmbat(batch1) %>% rmbat(batch2) %>% all.equal(pure_effect)
+```
+
+Seems great so far. Now however measurement error is considered, and we are no longer able to reliably remove the tru batch effect, but have to rely on some more or less precise estimate:
+
+```r
+    data_cleaned_a <- data_measured %>% rmbat(paste(batch1, batch2)) 
+    data_cleaned_b <- data_measured %>% rmbat(batch1) %>% rmbat(batch2)
+    all.equal(data_cleaned_a, data_cleaned_b)
+    all.equal(data_cleaned_a, data_wo_batch)
+    all.equal(data_cleaned_b, data_wo_batch)
+```
+
+And obviously the two approaches are not equivalent any more in this small sample. In addition the combination of the two batch identifiers in a new one seemingly leads to higher error compared to the stepwise approach (the latter one basing the mean estimates on somewhat bigger group sizes).
+
+Nonetheless after removal of the noise introduced by the batch effects, the biggest sources of variance should now be our experimental condition (or measurement error):
+
+
+```r
+pcscores <- pcv(data_wo_batch,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+
+pcscores <- pcv(data_cleaned_a,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+
+pcscores <- pcv(data_cleaned_b,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+```
+
+We also see:
+
+1. In the cleaned up data we have an even smaller amount of seeming batch effect compared to when we subtract the true batch effect, which seems strange, but is due to the fraction of measurement error, that is attributed to batches and removed altogether
+2. The variance of the 1^st PC explained by the experimental condition seems higher after automatic batch removal, which hints to the bias introduced by this method
+3. The above effects seem more pronounced when we combine the batch variable into a one leading to smaller groups available for the estimation of the batch effects, compared to the iterative/stepwise approach.
+
+We could compare this to the approaches limma::removeBatchEffect and sva::ComBat use:
+
+```r
+    # 1st use limma
+    data_cleaned_limma <- limma::removeBatchEffect(data_measured,batch1,batch2)
+
+    pcscores <- pcv(data_cleaned_limma,2)
+    plot(pcscores,pch=19, col=batch1)
+    plot(pcscores,pch=19, col=batch2)
+    plot(pcscores,pch=19, col=predictor+1)
+    summary(lm(pcscores[,1]~batch1))$r.squared
+    summary(lm(pcscores[,1]~batch2))$r.squared
+    summary(lm(pcscores[,1]~predictor))$r.squared
+
+    # now ComBat, which is recommend especially for smaller samples
+    data_cleaned_combat <- sva::ComBat(data_measured,batch1,mean.only=TRUE) %>% sva::ComBat(batch2,mean.only=TRUE)
+
+    pcscores <- pcv(data_cleaned_combat,2)
+    plot(pcscores,pch=19, col=batch1)
+    plot(pcscores,pch=19, col=batch2)
+    plot(pcscores,pch=19, col=predictor+1)
+    summary(lm(pcscores[,1]~batch1))$r.squared
+    summary(lm(pcscores[,1]~batch2))$r.squared
+    summary(lm(pcscores[,1]~predictor))$r.squared
+```
+
+So please keep in mind that the adequate way to control for batch effects in linear modelling is to include them as covariates. In that case it won't matter anyway, whether you conduct additional batch effect removal in advance:
+
+```r
+library(car)
+ori <- apply(data_measured,1,function(x) (summary(lm(x~predictor+I(batch1-1)+I(batch2-1)))$coef["predictor",])) %>% t
+cleaned <-apply(data_cleaned_b,1,function(x) (summary(lm(x~predictor+I(batch1-1)+I(batch2-1)))$coef["predictor",])) %>% t
+all.equal(ori,cleaned)
+```
+
+If you choose to do separate batch removal in case of batches correlated with the predictor of interest without including them in the analysis, this will reduce power and introduce bias in the data set.
+
+## Mitigate collinearity issues
+
+Testing associations of particular predictors with outcomes is often hampered by collinearity, i.e. mutual linear dependence of the considered factors. This can be mitigated for example by means of regularization (LASSO, ridge regression, elastic net) or collecting the variance of a bunch of predictors by performing principal component analysis and extraction independent factors.
+
+However, sometimes one wants to include a group of predictors exactly the way they are, because effect estimators are to be obtained that are adjusted for some certain covariates only. In that case you want to get information on the linear dependence of these factors in advance.
+
+The vifx function allows exactly this. Let us assume you have measured the fractions of some components in a liquid. As the fractions sum up to 100 Pct finally of course we have complete multil collinearity. Nonetheless. By just leaving out one of the constituents (i.e. the one with highest Variance inflation factor (meaning the one which could be best explained bei all remeining predictors in the set) we might be able to still adjust for the set in question:
+
+```r
+ n=100
+ stuff1 <- seq(0.2,0.3,l=100)+rnorm(n)*0.003
+ stuff2 <- 1:2/10+rnorm(n)*0.004
+ stuff3 <- 1-(stuff1+stuff2)+rnorm(n)*0.002
+ vifx(data.frame(stuff1,stuff2,stuff3))
+ vifx(data.frame(stuff1,stuff2))
+```
+So we would use just stuff1 and stuff2 as covariates in the model later on.
+
+
+

@@ -1,0 +1,4 @@
+exportPattern("^[[:alpha:]]+")
+importFrom("stats", "complete.cases", "prcomp", "var")
+importFrom("utils", "write.table")
+import(data.table)

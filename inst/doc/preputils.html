@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Preparing the workspace</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Preparing the workspace</h1>
+
+<p>As R is by default converting strings to factors when loading text data, and this has some subtle implications that we most often do not want to deal with, we first include the following line:</p>
+
+<pre><code class="r">options(stringsAsFactors=FALSE)
+</code></pre>
+
+<p>To make ourselves life easier we will change our R profile (&ldquo;~/.Rprofile&rdquo; in Linux or &ldquo;%USERPROFILE%\Documents.Rprofile&rdquo; in Windows) to attach some useful packages that we will almost surely use for any newly started R session automatically. So we want our updated R profile to include the following lines right at the beginning:</p>
+
+<pre><code class="r">library(data.table)
+library(magrittr)
+</code></pre>
+
+<p>Next, if we are often dealing with the creation of e data.frames or data.tables we might be inclined to define some abbreviations we&#39;ll often use and save quite typing work over time. As we do not want to clutter our namespace we collect them all into a list, which we also will attach:</p>
+
+<pre><code class="r">attach(list(
+    DF &lt;- function(...) data.frame(...),
+    DT &lt;- function(...) data.table(...)
+),name=&#39;myfun&#39;)
+</code></pre>
+
+<p>Please note the capital letters, as &#39;dt&#39; and &#39;df&#39; are already defined functions, which we do not want to hide.</p>
+
+<h1>Simplified output</h1>
+
+<p>Numerous times simple text output is sufficient. However, defaults defined for the write.table procedure often do not match one&#39;s desires, e.g. output of row.names leads to files that have a different number of columns in the 1<sup>st</sup> lines, or quoting of text fields creates problems for some programs that are to be used later on the data. So there are two functions to facilityte data exchange: write.tab and write.space</p>
+
+<p>So e.g. to get the famous &ldquo;iris&rdquo; data set into the clipboard, with columns separated by tabs, for pasting it into e.g. your favourite text editor or spreadsheet, you could just write (using our R profile above):</p>
+
+<pre><code class="r">iris %&gt;% write.tab(&quot;clipboard&quot;)
+</code></pre>
+
+<h1>Transformations</h1>
+
+<h2>Preparing fractional data for parametric analysis</h2>
+
+<p>Often data that we deal with show particular distributions other than normal, e.g. methylation-% data (so-called beta values) strictly speaking have a range between 0 and 1, as they denote a fraction, while common statistical methods assume a normal distribution. Nonetheless sometimes a simple transformation enables us to use parametric methods on these data as well.</p>
+
+<p>In the following example we first create our fractional data, six vectors with 30 observations and mean values around 0.01,0.05,0.5,0.8 and 0.9:</p>
+
+<pre><code class="r">a &lt;- sapply(c(0.01, 0.05, 0.5, 0.8, 0.9),function(x) rbinom(30, 100, x) / 100)
+</code></pre>
+
+<p>We can see that at both ends of the range the distributions are somewhat distorted and asymmetric:</p>
+
+<pre><code class="r">matplot(a, pch=20)
+</code></pre>
+
+<p>This leads to bias when using parametric methods. One possibility to change the shape of the distribution to more normal is a logit transformation to so called M-Values (log of odds). Plotting these transformed values, we see that throughout the whole range they look symmetric, in particular at the ends of the range:</p>
+
+<pre><code class="r">b &lt;- beta2m(a)
+matplot(b,pch=20)
+</code></pre>
+
+<p>Generally the transformation (which is nothing alse than the link function of the logistic regression, the only difference being that we here use logarithm with base 2 instead of e) will stretch the distribution at the extremes:</p>
+
+<pre><code class="r">matplot(a, b, pch=20)
+</code></pre>
+
+<h2>Transforming back</h2>
+
+<p>However when showing e.g. the average values for publication, often the reader finds the original scale of values more intuitive, so for plotting we transform them back to the original (0,1) scale by using the inverse function:</p>
+
+<pre><code>M_means &lt;- colmeans(b)
+beta_means &lt;- beta2m(M_means)
+barplot(beta_means)
+</code></pre>
+
+<h2>Details and points to consider</h2>
+
+<p>To be precise, in this transformation the previous range (0,1) will be converted to the whole range of (-Inf,Inf). Here some special values:</p>
+
+<table><thead>
+<tr>
+<th>Original.Value</th>
+<th>Transformed.Value</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>0</td>
+<td>-Inf</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>-2</td>
+</tr>
+<tr>
+<td>1/3</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2/3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0.8</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Inf</td>
+</tr>
+</tbody></table>
+
+<p>This has some implications:</p>
+
+<ul>
+<li>Values x=0 and x=1 result in transformed values to have an absolute value of Inf.</li>
+<li>As the function is not defined outside this range, values of x<0 or x>1 will result in NA values</li>
+</ul>
+
+<p>In order to use this kind of transformation</p>
+
+<ol>
+<li><p>we have to make sure that we have fractional data.</p></li>
+<li><p>If our range is different from (0,1) we have to fit the data into this range. This is possible by using the function normalize (see below).</p></li>
+<li><p>If we want to include the borders themselves (x=0 or x=1) we have to treat them specially (use fixlimits; see below)</p></li>
+</ol>
+
+<h2>Pretreating different scales</h2>
+
+<p>These have to be fit into the range(0,1). If we know in advance the exact range, we can convert the original data in a way, that the theoretical minimum becomes 0 and the theoretical maximum gets 1. If we do not know the theoretical range, we just base the calculations on the min and max values of our sample itself. Let&#39;s simply assume we have fractional data that have been scaled to the range of (0,7):</p>
+
+<pre><code class="r">a &lt;- runif(1000)*7
+</code></pre>
+
+<p>Then we just call normalize to get them to the proper interval:</p>
+
+<pre><code class="r">a1 &lt;- normalize(a)
+plot(a, a1)
+</code></pre>
+
+<h2>Make use of limits (0 and 1)</h2>
+
+<p>Common procedures are not really able to cope with values of infinity. To still use the values at the extremes, i.e. not discarding them by trimming the distribution, we can instead shift them to somewhere in between:</p>
+
+<pre><code>a &lt;- 0:10 / 10
+b &lt;- fixlimits(a)
+cbind(a, b)
+</code></pre>
+
+<p>So we see that values 0 and 1 get shifted to the position exactly half way between the borders and the previously most extreme value in their vicinity.</p>
+
+<h1>Dealing with messy data</h1>
+
+<p>When merging data sets from multiple sources one often has to deal with missing data, multiple data entry or inconsistent mappings of identifiers.</p>
+
+<h2>Multiple columns with the same data</h2>
+
+<p>In the easiest case, there are no entry errors, we just get the information multiple times (with missings at different positions), and take the first column with a non-missing value (shamelessly copied from the sql coalesce function:</p>
+
+<pre><code class="r">    a1 &lt;- c(1, NA, NA, NA)
+    a2 &lt;- c(2, 2, NA, NA)
+    a3 &lt;- c(NA, 3, 3, NA)
+    cbind(a1, a2, a3, suppl=coalesce(a1, a2, a3))
+</code></pre>
+
+<h2>Mapping errors or inconstent data entry</h2>
+
+<p>Let us now assume that within a study your have collected data and one attribute is input by not one but several data collectors, with partly overlapping ids. After merging some observations are contained in the data set multiple times with partly diverging values and after sorting the data you have the following situation:</p>
+
+<pre><code class="r">messy_data &lt;- data.table(id1=c(1,2,3,3,4,4,5),
+        id2=c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;c&quot;,&quot;d&quot;,&quot;dd&quot;,&quot;d&quot;),
+        smoker=c(0,0,1,1,0,1,0))
+</code></pre>
+
+<p>Somehow in both directions the id mapping has been messed up, and depending on the id code we use at least for some obersvations the smoking status information is inconsistent. So let&#39;s just find out, what are the critical observations:</p>
+
+<pre><code class="r">messy_data[incons(id1,id2)]
+</code></pre>
+
+<p>If we do not have the information to resolve the conflict we would have to discard these data sets as we do not trust messud up ids:</p>
+
+<pre><code class="r">clean_data &lt;- messydata[!incons(id1,id2)]
+</code></pre>
+
+<h2>Partly overlapping, partly missing data</h2>
+
+<p>Sometimes the situation is even worse. In the next study we tried to avoid overloading the assistants with work and split the sample into 3 parts. Somehow the work was still too much, or maybe the instruments weren&#39;t working properly, so we got back partly mising data sets from all our collaborators:</p>
+
+<pre><code class="r">    pheno1 &lt;- data.frame(id1=c(1,2,3,4),id2=c(11,22,NA,NA),phenodat=c(NA, NA, NA, &quot;d&quot;))
+    pheno2 &lt;- data.frame(id1=c(NA, NA, NA),id2=c(11, 22, 33),phenodat=c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+    pheno3 &lt;- data.frame(id1=c(4, 3), id2=c(44, 33), phenodat=c(NA,NA))
+    phenoges &lt;- rbindlist(list(pheno1, pheno2, pheno3))
+    phenoges
+</code></pre>
+
+<p>So we try to supplement the data/id were possible by use of fillmap focussing on the 1<sup>st</sup> id:</p>
+
+<pre><code class="r">phenoges[, fillmap(id1, phenodat)]
+</code></pre>
+
+<p>We see, some entries are duplicates, so let&#39;s get rid of them:</p>
+
+<pre><code class="r">phenoges[, fillmap(id1, phenodat, rmdup=TRUE)]
+</code></pre>
+
+<p>And now let us focus on the part of the data set were we are able to supplement the data:</p>
+
+<pre><code class="r">phenoges[,fillmap(id1,phenodat,rmmiss=TRUE)]
+</code></pre>
+
+<p>Of course we don&#39;t want to have the duplicates again:</p>
+
+<pre><code class="r">phenoges[,fillmap(id1,phenodat,rmmiss=TRUE,rmdup=TRUE)]
+</code></pre>
+
+<p>Hmmhh. that not satisfying at all, rather terrible. Let&#39;s try the alternative id:</p>
+
+<pre><code class="r">phenoges[,fillmap(id2,phenodat,rmmiss=TRUE,rmdup=TRUE)]
+</code></pre>
+
+<p>That is some improvement, but not pretty either. Now we have only covered a different part of the sample. We see that using either of the IDs alone, we cannot get rid of all the missings. But how about the following approach:</p>
+
+<ol>
+<li>We try to get a complete id mapping, keeping all observations</li>
+<li>Afterwards we try to fill in the phenotype data</li>
+<li>finally we filter missings and duplicates</li>
+</ol>
+
+<pre><code class="r">phenosupp &lt;- phenoges[,fillmap(id1,id2)]
+setnames(phenosupp,&quot;id1&quot;,&quot;id2&quot;)
+phenosupp[,phenodat:=fillmap(id1,phenoges$phenodat,what=&quot;y&quot;)]
+unique(phenosupp)
+</code></pre>
+
+<p>Bingo! In this case we were lucky and could fill in all missing data.</p>
+
+<h1>Multivariate data</h1>
+
+<h2>Reduce dimensions for batch and anomaly detection</h2>
+
+<p>Detection of large scale group differences in high dimensional data (like micro array or spectrometry studies) is facilitated by reducing the data set to a more manageable number of attributes, e.g. by means of PCA or MDS.</p>
+
+<p>In this kind of studies technical artefacts (like batch effects) are often the main drivers for variation, showing an even  bigger effect than the experimental factor. In these cases the issue can be mitigated by just using the extracted PCs as covariates.</p>
+
+<p>If we assume, that all the variables of concern are measured on the same scale and that this variation can captured by just using the features with the biggest variance, we can save quite some processing time by only using a small fraction of the variables, namely the ones showing the highest variance.</p>
+
+<p>The pcv() function conducts a principal component analysis. Only a limited number (default up to 5000) of variables with the highest variance in the data set are selected. A very limited number of PCs (default n=5) is then extracted that can be used for visualization etc.</p>
+
+<p>Let&#39;s create an example data set in attribute major (attributes given by rows, observations by columns) format:</p>
+
+<pre><code class="r">nobs &lt;- 80
+nvar &lt;- 10000
+data1 &lt;- matrix(rnorm(nobs*nvar), nrow=nvar)
+
+# introduce some differences in variance across features
+data1 &lt;- data1 * outer((1:nvar)^2/nvar^2*2,rep(1,nobs))
+
+# add the batch effect
+batch &lt;- rep(1:4,each=nobs*.25)
+data2 &lt;- data1 + outer(rep(1,nvar),batch)
+</code></pre>
+
+<p>Batch effects are not that easy to discern, at least not when variance is big compared to the effects (right side of the plot):</p>
+
+<pre><code class="r">matplot(data2,type=&quot;p&quot;,pch=&quot;.&quot;,col=factor(batch))
+</code></pre>
+
+<p>But pcv can help here. Even when using only the 5% features showing the biggest variance the groups are clearly separable</p>
+
+<pre><code class="r">pcv_full &lt;- pcv(data2,1)
+pcv_500 &lt;- pcv(data2,1,nvar*0.05)
+plot(pcv_full,col=batch,pch=20)
+plot(pcv_500,col=batch,pch=20)
+
+</code></pre>
+
+<h2>Remove known batch effects</h2>
+
+<p>In most cases not all samples can be processed simultaneously, so the total set is split into smaller batches, which are then processed one at a time. In particular for high dimensional data the so called batch effects introduced during processing can severely hamper analysis, lead to spurious associations, reduce power or even change correlation structure of the variables assessed.</p>
+
+<p>1<sup>st</sup> and most important step in reducing impact of batch effects is proper randomization, as far as possible.</p>
+
+<p>2<sup>nd</sup> step is to take the variation introduced by batch effect into account during analysis, e.g. by incorporating them as covariates in regression modelling. Some methods however do not support this type of adjustment per se, but require a priori batch removal. In that case rmbat &amp; co can be helpful.</p>
+
+<p>For example:
+Lets first create some data set with a certain true effect of the experimental variable:</p>
+
+<pre><code class="r">    n_obs &lt;- 8
+    n_var &lt;- 10
+    predictor &lt;- rep(0:1,n_obs*0.5)
+    pure_effect &lt;- outer(rnorm(n_var),predictor)
+</code></pre>
+
+<p>Luckily we have access to two machines, so that we can work in parallel. Still it&#39;s time consuming and measurement takes two runs on each of the machines, so we have two different batch effects (machine and run):</p>
+
+<pre><code class="r">    batch1 &lt;- rep(1:2,each=n_obs*0.5)
+    batch2 &lt;- rep(c(1,2,1,2),each=n_obs*0.25)
+</code></pre>
+
+<p>Now not every one of the measured features is affected the same way, some more, some less (kind of randomly distributed batch effect size for each of the features). Just more frequently than not the batch effect size is far bigger than the true effect size of interest. </p>
+
+<pre><code class="r">    batch_effect1 &lt;- outer(rnorm(n_var)*4,scale(batch1))[,,1]
+    batch_effect2 &lt;- outer(rnorm(n_var)*2,scale(batch2))[,,1]
+    batch_effect &lt;- batch_effect1 + batch_effect2
+</code></pre>
+
+<p>In addition, we have some noise in the data, so finally our measured data are a mix of real effect of our experimental condition, all batch effects, and the measurement error:</p>
+
+<pre><code class="r">    error &lt;- matrix(rnorm(n_var*n_obs),n_var,n_obs)
+    data_measured &lt;- pure_effect + batch_effect + error
+</code></pre>
+
+<p>When analyzing the data, we have lot&#39;s of noise. It could well be, that batches, and not experimental conditions ar the biggest source of variability:</p>
+
+<pre><code class="r">pcscores &lt;- pcv(data_measured,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+</code></pre>
+
+<p>To get rid of these batch effects, we could just subtract them from the measured data:</p>
+
+<pre><code class="r">data_wo_batch &lt;- data_measured - batch_effect
+</code></pre>
+
+<p>However, in most cases, we do not know the true batch effect, so to remove them, we choose the following simplified approach:</p>
+
+<ol>
+<li>We treat all of the variables separately and assume, the batch effects in one variable are not correlated with the values in the remaining variables</li>
+<li>We assume that all of the batches build a kind of batch population with a normal distribution around the mean value of the total sample for each of the variables (like it is explicitly coded in the example above). Therefore, we just center all of the batches round the grand mean. Thus we should get the same condition as if we had removed the true batch effects. </li>
+</ol>
+
+<p>As in this example in addition the batches are perfectly balanced it should not matter, whether we conduct the processing in one step (building a new batch variable by combining both available batch identifiers), or we alternatively remove one at a time.</p>
+
+<p>Let us 1<sup>st</sup> try that in the actual batch effects data separately, and see whether we can zero out the batch effects</p>
+
+<pre><code class="r">    zero &lt;- outer(rep(0,n_var),rep(0,n_obs))
+    b1 &lt;- rmbat(batch_effect1,batch1)
+    b2 &lt;- rmbat(batch_effect2,batch2)
+    b12a &lt;- rmbat(batch_effect1,paste(batch1,batch2))
+    b12b &lt;- batch_effect %&gt;% rmbat(batch1) %&gt;% rmbat(batch2)
+    all.equal(b1,zero)
+    all.equal(b2,zero)
+    all.equal(b12a,zero)
+    all.equal(b12b,zero)
+</code></pre>
+
+<p>Now for the same in the actual data. Let us assume, we had no measurement error:</p>
+
+<pre><code class="r">    (pure_effect + batch_effect1) %&gt;% rmbat(batch1) %&gt;% all.equal(pure_effect)
+    (pure_effect + batch_effect2) %&gt;% rmbat(batch2) %&gt;% all.equal(pure_effect)
+    (pure_effect + batch_effect1 + batch_effect2) %&gt;% rmbat(batch1) %&gt;% rmbat(batch2) %&gt;% all.equal(pure_effect)
+</code></pre>
+
+<p>Seems great so far. Now however measurement error is considered, and we are no longer able to reliably remove the tru batch effect, but have to rely on some more or less precise estimate:</p>
+
+<pre><code class="r">    data_cleaned_a &lt;- data_measured %&gt;% rmbat(paste(batch1, batch2)) 
+    data_cleaned_b &lt;- data_measured %&gt;% rmbat(batch1) %&gt;% rmbat(batch2)
+    all.equal(data_cleaned_a, data_cleaned_b)
+    all.equal(data_cleaned_a, data_wo_batch)
+    all.equal(data_cleaned_b, data_wo_batch)
+</code></pre>
+
+<p>And obviously the two approaches are not equivalent any more in this small sample. In addition the combination of the two batch identifiers in a new one seemingly leads to higher error compared to the stepwise approach (the latter one basing the mean estimates on somewhat bigger group sizes).</p>
+
+<p>Nonetheless after removal of the noise introduced by the batch effects, the biggest sources of variance should now be our experimental condition (or measurement error):</p>
+
+<pre><code class="r">pcscores &lt;- pcv(data_wo_batch,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+
+pcscores &lt;- pcv(data_cleaned_a,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+
+pcscores &lt;- pcv(data_cleaned_b,2)
+plot(pcscores,pch=19, col=batch1)
+plot(pcscores,pch=19, col=batch2)
+plot(pcscores,pch=19, col=predictor+1)
+summary(lm(pcscores[,1]~batch1))$r.squared
+summary(lm(pcscores[,1]~batch2))$r.squared
+summary(lm(pcscores[,1]~predictor))$r.squared
+</code></pre>
+
+<p>We also see:</p>
+
+<ol>
+<li>In the cleaned up data we have an even smaller amount of seeming batch effect compared to when we subtract the true batch effect, which seems strange, but is due to the fraction of measurement error, that is attributed to batches and removed altogether</li>
+<li>The variance of the 1<sup>st</sup> PC explained by the experimental condition seems higher after automatic batch removal, which hints to the bias introduced by this method</li>
+<li>The above effects seem more pronounced when we combine the batch variable into a one leading to smaller groups available for the estimation of the batch effects, compared to the iterative/stepwise approach.</li>
+</ol>
+
+<p>We could compare this to the approaches limma::removeBatchEffect and sva::ComBat use:</p>
+
+<pre><code class="r">    # 1st use limma
+    data_cleaned_limma &lt;- limma::removeBatchEffect(data_measured,batch1,batch2)
+
+    pcscores &lt;- pcv(data_cleaned_limma,2)
+    plot(pcscores,pch=19, col=batch1)
+    plot(pcscores,pch=19, col=batch2)
+    plot(pcscores,pch=19, col=predictor+1)
+    summary(lm(pcscores[,1]~batch1))$r.squared
+    summary(lm(pcscores[,1]~batch2))$r.squared
+    summary(lm(pcscores[,1]~predictor))$r.squared
+
+    # now ComBat, which is recommend especially for smaller samples
+    data_cleaned_combat &lt;- sva::ComBat(data_measured,batch1,mean.only=TRUE) %&gt;% sva::ComBat(batch2,mean.only=TRUE)
+
+    pcscores &lt;- pcv(data_cleaned_combat,2)
+    plot(pcscores,pch=19, col=batch1)
+    plot(pcscores,pch=19, col=batch2)
+    plot(pcscores,pch=19, col=predictor+1)
+    summary(lm(pcscores[,1]~batch1))$r.squared
+    summary(lm(pcscores[,1]~batch2))$r.squared
+    summary(lm(pcscores[,1]~predictor))$r.squared
+</code></pre>
+
+<p>So please keep in mind that the adequate way to control for batch effects in linear modelling is to include them as covariates. In that case it won&#39;t matter anyway, whether you conduct additional batch effect removal in advance:</p>
+
+<pre><code class="r">library(car)
+ori &lt;- apply(data_measured,1,function(x) (summary(lm(x~predictor+I(batch1-1)+I(batch2-1)))$coef[&quot;predictor&quot;,])) %&gt;% t
+cleaned &lt;-apply(data_cleaned_b,1,function(x) (summary(lm(x~predictor+I(batch1-1)+I(batch2-1)))$coef[&quot;predictor&quot;,])) %&gt;% t
+all.equal(ori,cleaned)
+</code></pre>
+
+<p>If you choose to do separate batch removal in case of batches correlated with the predictor of interest without including them in the analysis, this will reduce power and introduce bias in the data set.</p>
+
+<h2>Mitigate collinearity issues</h2>
+
+<p>Testing associations of particular predictors with outcomes is often hampered by collinearity, i.e. mutual linear dependence of the considered factors. This can be mitigated for example by means of regularization (LASSO, ridge regression, elastic net) or collecting the variance of a bunch of predictors by performing principal component analysis and extraction independent factors.</p>
+
+<p>However, sometimes one wants to include a group of predictors exactly the way they are, because effect estimators are to be obtained that are adjusted for some certain covariates only. In that case you want to get information on the linear dependence of these factors in advance.</p>
+
+<p>The vifx function allows exactly this. Let us assume you have measured the fractions of some components in a liquid. As the fractions sum up to 100 Pct finally of course we have complete multil collinearity. Nonetheless. By just leaving out one of the constituents (i.e. the one with highest Variance inflation factor (meaning the one which could be best explained bei all remeining predictors in the set) we might be able to still adjust for the set in question:</p>
+
+<pre><code class="r"> n=100
+ stuff1 &lt;- seq(0.2,0.3,l=100)+rnorm(n)*0.003
+ stuff2 &lt;- 1:2/10+rnorm(n)*0.004
+ stuff3 &lt;- 1-(stuff1+stuff2)+rnorm(n)*0.002
+ vifx(data.frame(stuff1,stuff2,stuff3))
+ vifx(data.frame(stuff1,stuff2))
+</code></pre>
+
+<p>So we would use just stuff1 and stuff2 as covariates in the model later on.</p>
+
+</body>
+
+</html>
