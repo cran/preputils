@@ -1,4 +1,4 @@
-43228d5fce66a72e1abde346afb70b0a *DESCRIPTION
+9d4c97780885d62c242b01295826706a *DESCRIPTION
 6366324dcb24d536e4bb2cef725a36f3 *NAMESPACE
 d1d4171dc519e78b0688b84a1983b036 *R/beta2m.R
 11501ab92beda07dcf066040a96a3d58 *R/coalesce.R
@@ -9,14 +9,10 @@ aa834784d5007e5a14ae3a3680dc1d98 *R/fixlimits.R
 926fd9543a13fb4c84706047a4b82aad *R/m2beta.R
 951bf505ce1e77f4b697aca278f468fa *R/normalize.R
 8edcc4a78f3cda845a49c4f5fe166199 *R/pcv.R
-46cf0c46b8dee82f85617ad62fc17180 *R/rmbat.R
+1f5d2a795474eca09ff5d2637b2065f6 *R/rmbat.R
 592333203d3b77607bc997ab2a938937 *R/vifx.R
-5d11bdc905bec296909681173954729b *R/write.space.R
-070255ad47993e2cd5ad0dac9cb7ad5f *R/write.tab.R
-3d5f6cfefc15d5a4481f682496b732de *build/vignette.rds
-d69642450d609a1d111695ed08e6c574 *inst/doc/preputils.R
-42ed1c292e422c8f1685a476903b3a20 *inst/doc/preputils.Rmd
-50d366764166da20e2ea623aa96e97df *inst/doc/preputils.html
+abdc8f405a816944e8ed57cd2f6d0cbc *R/write.space.R
+530da3ece407c6bd1ba5f557dfc7cde3 *R/write.tab.R
 a343c616c418205ad4ddbd0307d13d01 *man/beta2m.Rd
 66954353fce17b1788fa9dcbfc42e837 *man/coalesce.Rd
 da6b71cc640249b7eda28d01fc9d4730 *man/fillmap.Rd
@@ -29,4 +25,3 @@ bbd666ccb8abf3924bd1cfd488e2fb65 *man/normalize.Rd
 3634e7327064ca73a333ec79980d2ee8 *man/rmbat.Rd
 1c11c8cab46f75a557f8956a85048ffd *man/vifx.Rd
 53e6c5281841396a40606745e440b9bc *man/write.data.Rd
-42ed1c292e422c8f1685a476903b3a20 *vignettes/preputils.Rmd
